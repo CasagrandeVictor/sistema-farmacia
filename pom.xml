@@ -13,7 +13,7 @@
     <description>Aplicação de vendas de farmácia com os padrões Strategy e Builder</description>
 
     <properties>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exec.mainClass>br.com.farmacia.app.Main</exec.mainClass>
     </properties>
@@ -21,6 +21,12 @@
     <build>
         <finalName>sistema-farmacia</finalName>
         <plugins>
+            <!-- Compila para Java 17 também nas versões 3.8+ do Maven -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+            </plugin>
             <!-- Gera um JAR executável com a classe Main no manifesto -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

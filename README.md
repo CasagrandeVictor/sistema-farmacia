@@ -37,7 +37,7 @@ taxa de entrega e total.
 
 ## Tecnologias e pré-requisitos
 
-- **Java 17 ou superior** (desenvolvido e testado com Java 21)
+- **JDK 17 ou superior** (compilação configurada para Java 17)
 - **Maven 3.8+** (para compilar e executar)
 - Não usa banco de dados nem dependências externas — os dados ficam em memória.
 
@@ -74,6 +74,16 @@ padrões em ação) ou **2** para montar a sua própria venda.
 
 ### Rodando os testes
 
+Os testes não usam framework e são executados pela classe `TesteManual`.
+Com Maven:
+
+```bash
+mvn test-compile
+java -cp target/classes:target/test-classes br.com.farmacia.TesteManual
+```
+
+Sem Maven:
+
 ```bash
 javac -encoding UTF-8 -d target/classes $(find src/main -name "*.java")
 javac -encoding UTF-8 -cp target/classes -d target/test-classes src/test/java/br/com/farmacia/TesteManual.java
@@ -81,6 +91,10 @@ java -cp target/classes:target/test-classes br.com.farmacia.TesteManual
 ```
 
 (no Windows, troque `:` por `;` no classpath)
+
+As verificações cobrem os descontos, os limites de idade, a taxa de entrega,
+os dados obrigatórios do Builder e a imutabilidade das vendas ao reutilizá-lo.
+O processo termina com código 1 se alguma verificação falhar.
 
 ---
 
@@ -156,6 +170,8 @@ com métodos fluentes, e valida tudo no `build()`.
 O cliente e ao menos um item são obrigatórios; os demais são opcionais. O
 `build()` recusa venda sem itens e entrega sem endereço, garantindo que a Venda
 só nasce em estado válido.
+Cada venda recebe uma cópia imutável dos itens, então reutilizar o Builder
+para montar outra venda não altera os itens nem os totais das anteriores.
 
 ### Como os dois se encontram
 
@@ -191,11 +207,13 @@ src/main/java/br/com/farmacia/
 
 Conforme as regras da Parte 1, declaramos o uso de IA:
 
-- **Modelo utilizado:** Claude (Anthropic).
+- **Ferramentas de IA utilizadas:** Claude (Anthropic) e Codex (OpenAI).
 - **Partes em que foi utilizada:** a IA serviu como apoio no desenvolvimento,
   auxiliando na organização da estrutura do projeto e na escrita do código.
   Todo o conteúdo gerado foi revisado e compreendido pela equipe antes de ser
   incorporado ao trabalho.
+- **Revisão com Codex:** apoio na revisão geral, na correção da imutabilidade
+  das vendas e da configuração de compilação, e na ampliação dos testes.
 
 ---
 
@@ -206,4 +224,4 @@ Conforme as regras da Parte 1, declaramos o uso de IA:
 | Victor Casagrande Correa | Desenvolvimento da Parte 1 |
 | Isaac Alexsander Pereira Pessoa | Desenvolvimento da Parte 2 |
 | Lucas Hoffmann | Desenvolvimento da Parte 2 |
-| Davi Novakoski | Desenvolvimento da Parte 1 e da Parte 2 |
+| Davi Novakoski | Desenvolvimento da Parte 1 e da Parte 2; revisão do Builder, configuração de compilação e testes de regressão |

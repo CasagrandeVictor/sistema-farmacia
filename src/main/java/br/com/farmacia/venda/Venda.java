@@ -7,7 +7,6 @@ import br.com.farmacia.model.ItemVenda;
 import br.com.farmacia.model.Produto;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class Venda {
     // Construtor PRIVADO: ninguém cria uma Venda diretamente, só pelo Builder.
     private Venda(Builder builder) {
         this.cliente = builder.cliente;
-        this.itens = builder.itens;
+        this.itens = List.copyOf(builder.itens);
         this.politicaDesconto = builder.politicaDesconto;
         this.entrega = builder.entrega;
         this.enderecoEntrega = builder.enderecoEntrega;
@@ -75,7 +74,7 @@ public class Venda {
     }
 
     public List<ItemVenda> getItens() {
-        return Collections.unmodifiableList(itens);
+        return itens;
     }
 
     public PoliticaDesconto getPoliticaDesconto() {
