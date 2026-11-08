@@ -206,7 +206,7 @@ Conforme as regras da Parte 1, declaramos o uso de IA:
 
 | Integrante | Contribuição |
 |---|---|
-| (Nome 1) | Entidades (Produto, Cliente, ItemVenda) e catálogo |
-| (Nome 2) | Padrão Strategy (políticas de desconto) |
-| (Nome 3) | Padrão Builder (Venda e Builder) e cupom |
-| (Nome 4) | Fluxo de console (Main), testes e README |
+| Victor Casagrande Correa | Entidades (Produto, Cliente, ItemVenda) e catálogo |
+| Isaac Alexsander Pereira Pessoa | Padrão Strategy (políticas de desconto) |
+| Lucas Hoffmann | Padrão Builder (Venda e Builder) e cupom |
+| Davi Novakoski | Fluxo de console (Main), testes e README |
