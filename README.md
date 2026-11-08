@@ -199,9 +199,11 @@ Conforme as regras da Parte 1, declaramos o uso de IA:
 
 ---
 
-## Integrantes
+## Contribuição de cada integrante
 
-- Victor Casagrande Correa
-- Isaac Alexsander Pereira Pessoa
-- Lucas Hoffmann
-- Davi Novakoski
+| Integrante | Contribuição |
+|---|---|
+| Victor Casagrande Correa | Entidades (Produto, Cliente, ItemVenda) e catálogo |
+| Isaac Alexsander Pereira Pessoa | Padrão Strategy (políticas de desconto) |
+| Lucas Hoffmann | Padrão Builder (Venda e Builder) e cupom |
+| Davi Novakoski | Fluxo de console (Main), testes e README |
