@@ -192,10 +192,7 @@ src/main/java/br/com/farmacia/
 Conforme as regras da Parte 1, declaramos o uso de IA:
 
 - **Modelo utilizado:** Claude (Anthropic).
-- **Partes em que foi utilizada:** apoio na estruturação do projeto Maven, na
-  escrita do código dos padrões Strategy e Builder, na redação dos comentários e
-  deste README, e na criação dos testes manuais. Todo o código foi revisado,
-  testado e compreendido pela equipe.
+- **Partes em que foi utilizada:** auxílio no código e na estrutura do projeto.
 
 ---
 
