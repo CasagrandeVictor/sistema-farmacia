@@ -206,4 +206,4 @@ Conforme as regras da Parte 1, declaramos o uso de IA:
 | Victor Casagrande Correa | Desenvolvimento da Parte 1 |
 | Isaac Alexsander Pereira Pessoa | Desenvolvimento da Parte 2 |
 | Lucas Hoffmann | Desenvolvimento da Parte 2 |
-| Davi Novakoski | Desenvolvimento da Parte 2 |
+| Davi Novakoski | Desenvolvimento da Parte 1 e da Parte 2 |
