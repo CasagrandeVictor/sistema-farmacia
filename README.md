@@ -199,14 +199,9 @@ Conforme as regras da Parte 1, declaramos o uso de IA:
 
 ---
 
-## Contribuição de cada integrante
+## Integrantes
 
-> Preencha com os nomes reais e o que cada um fez. Lembre que cada integrante
-> precisa de pelo menos um commit autoral com a própria conta do GitHub.
-
-| Integrante | Contribuição |
-|---|---|
-| Victor Casagrande Correa | Entidades (Produto, Cliente, ItemVenda) e catálogo |
-| Isaac Alexsander Pereira Pessoa | Padrão Strategy (políticas de desconto) |
-| Lucas Hoffmann | Padrão Builder (Venda e Builder) e cupom |
-| Davi Novakoski | Fluxo de console (Main), testes e README |
+- Victor Casagrande Correa
+- Isaac Alexsander Pereira Pessoa
+- Lucas Hoffmann
+- Davi Novakoski
