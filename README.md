@@ -192,7 +192,10 @@ src/main/java/br/com/farmacia/
 Conforme as regras da Parte 1, declaramos o uso de IA:
 
 - **Modelo utilizado:** Claude (Anthropic).
-- **Partes em que foi utilizada:** auxílio no código e na estrutura do projeto.
+- **Partes em que foi utilizada:** a IA serviu como apoio no desenvolvimento,
+  auxiliando na organização da estrutura do projeto e na escrita do código.
+  Todo o conteúdo gerado foi revisado e compreendido pela equipe antes de ser
+  incorporado ao trabalho.
 
 ---
 
