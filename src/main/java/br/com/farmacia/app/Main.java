@@ -61,9 +61,11 @@ public class Main {
     }
 
     /**
-     * Demonstração automática: a MESMA cesta de produtos vendida com três
-     * políticas de desconto diferentes (Strategy trocando em runtime) e usando
-     * o Builder para montar formatos de venda diferentes (balcão x entrega).
+     * Demonstração automática com 4 vendas: a MESMA cesta de produtos vendida
+     * com três políticas de desconto diferentes (Strategy trocando em runtime),
+     * usando o Builder para montar formatos de venda diferentes (balcão,
+     * entrega e presente), e uma venda de medicamento controlado (Amoxicilina)
+     * que o Builder só aceita com a identificação da receita médica.
      */
     private static void demonstracao() {
         System.out.println("\n----- DEMONSTRAÇÃO -----");
@@ -262,6 +264,8 @@ public class Main {
 
     /** Sinaliza que a entrada padrão terminou. */
     private static final class FimDaEntrada extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
         FimDaEntrada() {
             super(null, null, false, false);
         }

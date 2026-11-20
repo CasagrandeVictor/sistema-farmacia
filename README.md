@@ -160,7 +160,7 @@ Medicamento controlado, vendido com receita:
 Cliente: Ana (25 anos)
 1x Amoxicilina 500mg = R$ 34,50
 Subtotal.........: R$ 34,50
-Receita.........: CRM-SC 12345
+Receita..........: CRM-SC 12345
 TOTAL............: R$ 34,50
 ```
 
