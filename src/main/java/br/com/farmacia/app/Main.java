@@ -156,6 +156,19 @@ public class Main {
             builder.comEntrega(sc.nextLine().trim());
         }
 
+        // Embrulho para presente?
+        System.out.print("Embrulhar para presente? (s/n): ");
+        if (sc.nextLine().trim().equalsIgnoreCase("s")) {
+            builder.comEmbrulhoPresente();
+        }
+
+        // Observação opcional
+        System.out.print("Observação (Enter para pular): ");
+        String observacao = sc.nextLine().trim();
+        if (!observacao.isBlank()) {
+            builder.comObservacao(observacao);
+        }
+
         // Monta e imprime
         try {
             Venda venda = builder.build();
