@@ -1,6 +1,7 @@
 package br.com.farmacia.venda;
 
 import br.com.farmacia.model.ItemVenda;
+import br.com.farmacia.util.Moeda;
 
 /**
  * Formata uma {@link Venda} como um cupom de texto legível no console.
@@ -24,14 +25,14 @@ public final class Cupom {
         }
 
         sb.append("---------------------------------------\n");
-        sb.append(String.format("Subtotal.........: R$ %.2f%n", venda.getSubtotal()));
-        if (venda.getDesconto() > 0) {
-            sb.append(String.format("%s: -R$ %.2f%n",
-                    venda.getPoliticaDesconto().getDescricao(), venda.getDesconto()));
+        sb.append("Subtotal.........: ").append(Moeda.formatar(venda.getSubtotal())).append("\n");
+        if (venda.getDesconto().signum() > 0) {
+            sb.append(venda.getPoliticaDesconto().getDescricao()).append(": -")
+                    .append(Moeda.formatar(venda.getDesconto())).append("\n");
         }
 
         if (venda.isEntrega()) {
-            sb.append(String.format("Taxa de entrega..: R$ %.2f%n", venda.getTaxaEntrega()));
+            sb.append("Taxa de entrega..: ").append(Moeda.formatar(venda.getTaxaEntrega())).append("\n");
             sb.append("Endereço.........: ").append(venda.getEnderecoEntrega()).append("\n");
         }
         if (venda.isEmbrulhoPresente()) {
@@ -45,7 +46,7 @@ public final class Cupom {
         }
 
         sb.append("---------------------------------------\n");
-        sb.append(String.format("TOTAL............: R$ %.2f%n", venda.getTotal()));
+        sb.append("TOTAL............: ").append(Moeda.formatar(venda.getTotal())).append("\n");
         sb.append("=======================================\n");
         return sb.toString();
     }

@@ -1,5 +1,9 @@
 package br.com.farmacia.model;
 
+import br.com.farmacia.util.Moeda;
+
+import java.math.BigDecimal;
+
 /**
  * Entidade que representa um produto vendido na farmácia.
  *
@@ -9,14 +13,14 @@ package br.com.farmacia.model;
 public class Produto {
 
     private final String nome;
-    private final double preco;
+    private final BigDecimal preco;
     private final boolean exigeReceita;
 
-    public Produto(String nome, double preco, boolean exigeReceita) {
+    public Produto(String nome, BigDecimal preco, boolean exigeReceita) {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome do produto é obrigatório.");
         }
-        if (preco <= 0) {
+        if (preco == null || preco.signum() <= 0) {
             throw new IllegalArgumentException("Preço do produto deve ser maior que zero.");
         }
         this.nome = nome;
@@ -28,7 +32,7 @@ public class Produto {
         return nome;
     }
 
-    public double getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
@@ -39,6 +43,6 @@ public class Produto {
     @Override
     public String toString() {
         String tag = exigeReceita ? " (exige receita)" : "";
-        return String.format("%s - R$ %.2f%s", nome, preco, tag);
+        return String.format("%s - %s%s", nome, Moeda.formatar(preco), tag);
     }
 }

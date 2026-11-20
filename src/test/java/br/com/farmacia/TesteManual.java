@@ -6,8 +6,10 @@ import br.com.farmacia.desconto.SemDesconto;
 import br.com.farmacia.model.Cliente;
 import br.com.farmacia.model.ItemVenda;
 import br.com.farmacia.model.Produto;
+import br.com.farmacia.venda.Cupom;
 import br.com.farmacia.venda.Venda;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -24,8 +26,8 @@ public class TesteManual {
     private static int falhas = 0;
 
     public static void main(String[] args) {
-        Produto dipirona = new Produto("Dipirona", 10.00, false);
-        Produto vitamina = new Produto("Vitamina C", 20.00, false);
+        Produto dipirona = new Produto("Dipirona", new BigDecimal("10.00"), false);
+        Produto vitamina = new Produto("Vitamina C", new BigDecimal("20.00"), false);
 
         Cliente idoso = new Cliente("João", 70, false);
         Cliente fiel = new Cliente("Maria", 30, true);
@@ -37,8 +39,8 @@ public class TesteManual {
                 .adicionarItem(vitamina, 1)   // 20,00
                 .comDesconto(new DescontoIdoso())
                 .build();
-        verifica("desconto idoso (15%)", 6.00, v1.getDesconto());
-        verifica("total com desconto idoso", 34.00, v1.getTotal());
+        verifica("desconto idoso (15%)", "6.00", v1.getDesconto());
+        verifica("total com desconto idoso", "34.00", v1.getTotal());
 
         // STRATEGY: fidelidade = 10% sobre 40,00 = 4,00
         Venda v2 = new Venda.Builder(fiel)
@@ -46,32 +48,32 @@ public class TesteManual {
                 .adicionarItem(vitamina, 1)
                 .comDesconto(new DescontoFidelidade())
                 .build();
-        verifica("desconto fidelidade (10%)", 4.00, v2.getDesconto());
+        verifica("desconto fidelidade (10%)", "4.00", v2.getDesconto());
 
         // STRATEGY: sem desconto = 0
         Venda v3 = new Venda.Builder(comum)
                 .adicionarItem(vitamina, 1)
                 .comDesconto(new SemDesconto())
                 .build();
-        verifica("sem desconto", 0.00, v3.getDesconto());
+        verifica("sem desconto", "0.00", v3.getDesconto());
 
         // BUILDER: venda com entrega soma a taxa de 8,00
         Venda v4 = new Venda.Builder(comum)
                 .adicionarItem(vitamina, 1)   // 20,00
                 .comEntrega("Rua X, 10")
                 .build();
-        verifica("taxa de entrega", 8.00, v4.getTaxaEntrega());
-        verifica("total com entrega", 28.00, v4.getTotal());
+        verifica("taxa de entrega", "8.00", v4.getTaxaEntrega());
+        verifica("total com entrega", "28.00", v4.getTotal());
 
         // STRATEGY: a política escolhida só aplica desconto a clientes elegíveis.
-        verifica("cliente comum sem desconto idoso", 0.00,
-                new DescontoIdoso().calcularDesconto(40.00, comum));
-        verifica("cliente comum sem desconto fidelidade", 0.00,
-                new DescontoFidelidade().calcularDesconto(40.00, comum));
-        verifica("cliente de 59 anos sem desconto idoso", 0.00,
-                new DescontoIdoso().calcularDesconto(40.00, new Cliente("Pedro", 59, false)));
-        verifica("cliente de 60 anos com desconto idoso", 6.00,
-                new DescontoIdoso().calcularDesconto(40.00, new Cliente("Paula", 60, false)));
+        verifica("cliente comum sem desconto idoso", "0.00",
+                new DescontoIdoso().calcularDesconto(new BigDecimal("40.00"), comum));
+        verifica("cliente comum sem desconto fidelidade", "0.00",
+                new DescontoFidelidade().calcularDesconto(new BigDecimal("40.00"), comum));
+        verifica("cliente de 59 anos sem desconto idoso", "0.00",
+                new DescontoIdoso().calcularDesconto(new BigDecimal("40.00"), new Cliente("Pedro", 59, false)));
+        verifica("cliente de 60 anos com desconto idoso", "6.00",
+                new DescontoIdoso().calcularDesconto(new BigDecimal("40.00"), new Cliente("Paula", 60, false)));
 
         // STRATEGY: seAplica indica a elegibilidade do cliente para cada política.
         verificaVerdadeiro("sem desconto se aplica a qualquer cliente",
@@ -94,14 +96,14 @@ public class TesteManual {
         Venda segundaVenda = builder.adicionarItem(dipirona, 2).build();
         builder.adicionarItem(vitamina, 1);
 
-        verifica("primeira venda mantém um item", 1, primeiraVenda.getItens().size());
-        verifica("primeira venda mantém subtotal", 20.00, primeiraVenda.getSubtotal());
-        verifica("primeira venda mantém desconto", 2.00, primeiraVenda.getDesconto());
-        verifica("primeira venda mantém total", 18.00, primeiraVenda.getTotal());
-        verifica("segunda venda mantém dois itens", 2, segundaVenda.getItens().size());
-        verifica("segunda venda mantém subtotal", 40.00, segundaVenda.getSubtotal());
-        verifica("segunda venda mantém desconto", 4.00, segundaVenda.getDesconto());
-        verifica("segunda venda mantém total", 36.00, segundaVenda.getTotal());
+        verificaQuantidade("primeira venda mantém um item", 1, primeiraVenda.getItens().size());
+        verifica("primeira venda mantém subtotal", "20.00", primeiraVenda.getSubtotal());
+        verifica("primeira venda mantém desconto", "2.00", primeiraVenda.getDesconto());
+        verifica("primeira venda mantém total", "18.00", primeiraVenda.getTotal());
+        verificaQuantidade("segunda venda mantém dois itens", 2, segundaVenda.getItens().size());
+        verifica("segunda venda mantém subtotal", "40.00", segundaVenda.getSubtotal());
+        verifica("segunda venda mantém desconto", "4.00", segundaVenda.getDesconto());
+        verifica("segunda venda mantém total", "36.00", segundaVenda.getTotal());
         verificaExcecao("itens da venda não podem ser removidos externamente",
                 UnsupportedOperationException.class, () -> primeiraVenda.getItens().clear());
         verificaExcecao("itens da venda não podem ser adicionados externamente",
@@ -136,6 +138,25 @@ public class TesteManual {
             System.out.println("OK: entrega sem endereço é rejeitada");
         }
 
+        // CUPOM: valores em formato brasileiro, arredondamento e linha de desconto
+        Produto dipirona500 = new Produto("Dipirona 500mg", new BigDecimal("12.90"), false);
+        Produto vitaminaC = new Produto("Vitamina C", new BigDecimal("25.00"), false);
+        Venda demo = new Venda.Builder(idoso)
+                .adicionarItem(dipirona500, 2)
+                .adicionarItem(vitaminaC, 1)
+                .comDesconto(new DescontoIdoso())
+                .build();
+        verifica("desconto idoso sobre 50,80", "7.62", demo.getDesconto());
+        verifica("total com desconto idoso sobre 50,80", "43.18", demo.getTotal());
+        String cupom = Cupom.formatar(demo);
+        verificaVerdadeiro("cupom usa vírgula decimal", cupom.contains("TOTAL............: R$ 43,18"));
+        verificaVerdadeiro("cupom mostra o desconto aplicado",
+                cupom.contains("Desconto idoso (15%): -R$ 7,62"));
+        verificaVerdadeiro("cupom omite desconto zerado",
+                !Cupom.formatar(v3).contains("Sem desconto"));
+        verifica("desconto arredonda com HALF_EVEN", "0.12", new DescontoFidelidade()
+                .calcularDesconto(new BigDecimal("1.25"), fiel)); // 0,125 -> 0,12
+
         // ENTIDADES: validação dos dados de entrada
         verificaExcecao("cliente com nome nulo é rejeitado", IllegalArgumentException.class,
                 () -> new Cliente(null, 30, false));
@@ -149,18 +170,18 @@ public class TesteManual {
                 new Cliente("Bebê", 0, false).getIdade() == 0
                         && new Cliente("Ana", 130, false).getIdade() == 130);
         verificaExcecao("produto com nome em branco é rejeitado", IllegalArgumentException.class,
-                () -> new Produto(" ", 10.00, false));
+                () -> new Produto(" ", new BigDecimal("10.00"), false));
         verificaExcecao("produto com preço zero é rejeitado", IllegalArgumentException.class,
-                () -> new Produto("Dipirona", 0.00, false));
+                () -> new Produto("Dipirona", new BigDecimal("0.00"), false));
         verificaExcecao("produto com preço negativo é rejeitado", IllegalArgumentException.class,
-                () -> new Produto("Dipirona", -1.00, false));
+                () -> new Produto("Dipirona", new BigDecimal("-1.00"), false));
         verificaExcecao("item com produto nulo é rejeitado", IllegalArgumentException.class,
                 () -> new ItemVenda(null, 1));
         verificaExcecao("item com quantidade zero é rejeitado", IllegalArgumentException.class,
                 () -> new ItemVenda(vitamina, 0));
 
         // BUILDER: produto controlado exige receita médica
-        Produto amoxicilina = new Produto("Amoxicilina", 30.00, true);
+        Produto amoxicilina = new Produto("Amoxicilina", new BigDecimal("30.00"), true);
         verificaExcecao("produto controlado sem receita é rejeitado", IllegalStateException.class,
                 () -> new Venda.Builder(comum).adicionarItem(amoxicilina, 1).build());
         verificaExcecao("produto controlado com receita em branco é rejeitado",
@@ -182,11 +203,21 @@ public class TesteManual {
         }
     }
 
-    private static void verifica(String nome, double esperado, double obtido) {
-        if (Math.abs(esperado - obtido) < 0.001) {
-            System.out.printf("OK: %s = %.2f%n", nome, obtido);
+    /** Compara valores monetários com compareTo (ignora a escala: 6 == 6.00). */
+    private static void verifica(String nome, String esperado, BigDecimal obtido) {
+        if (obtido != null && new BigDecimal(esperado).compareTo(obtido) == 0) {
+            System.out.printf("OK: %s = %s%n", nome, obtido);
         } else {
-            System.out.printf("FALHA: %s esperado %.2f, obtido %.2f%n", nome, esperado, obtido);
+            System.out.printf("FALHA: %s esperado %s, obtido %s%n", nome, esperado, obtido);
+            falhas++;
+        }
+    }
+
+    private static void verificaQuantidade(String nome, int esperado, int obtido) {
+        if (esperado == obtido) {
+            System.out.printf("OK: %s = %d%n", nome, obtido);
+        } else {
+            System.out.printf("FALHA: %s esperado %d, obtido %d%n", nome, esperado, obtido);
             falhas++;
         }
     }

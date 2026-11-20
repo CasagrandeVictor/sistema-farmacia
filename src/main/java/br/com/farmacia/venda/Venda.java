@@ -6,6 +6,7 @@ import br.com.farmacia.model.Cliente;
 import br.com.farmacia.model.ItemVenda;
 import br.com.farmacia.model.Produto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,9 @@ import java.util.List;
  * delega a ela o cálculo do desconto no total.
  */
 public class Venda {
+
+    /** Taxa fixa cobrada nas vendas com entrega. */
+    public static final BigDecimal TAXA_ENTREGA = new BigDecimal("8.00");
 
     // Obrigatórios
     private final Cliente cliente;
@@ -48,27 +52,27 @@ public class Venda {
     }
 
     /** Soma dos subtotais de todos os itens, antes do desconto. */
-    public double getSubtotal() {
-        double total = 0.0;
+    public BigDecimal getSubtotal() {
+        BigDecimal total = BigDecimal.ZERO;
         for (ItemVenda item : itens) {
-            total += item.getSubtotal();
+            total = total.add(item.getSubtotal());
         }
         return total;
     }
 
     /** Valor do desconto, calculado pela estratégia (Strategy). */
-    public double getDesconto() {
+    public BigDecimal getDesconto() {
         return politicaDesconto.calcularDesconto(getSubtotal(), cliente);
     }
 
     /** Taxa fixa de entrega, somada apenas quando a venda tem entrega. */
-    public double getTaxaEntrega() {
-        return entrega ? 8.00 : 0.0;
+    public BigDecimal getTaxaEntrega() {
+        return entrega ? TAXA_ENTREGA : BigDecimal.ZERO;
     }
 
     /** Total final = subtotal - desconto + taxa de entrega. */
-    public double getTotal() {
-        return getSubtotal() - getDesconto() + getTaxaEntrega();
+    public BigDecimal getTotal() {
+        return getSubtotal().subtract(getDesconto()).add(getTaxaEntrega());
     }
 
     public Cliente getCliente() {

@@ -9,6 +9,7 @@ import br.com.farmacia.model.Produto;
 import br.com.farmacia.venda.Cupom;
 import br.com.farmacia.venda.Venda;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,11 +26,11 @@ public class Main {
 
     // Catálogo fixo em memória (sem banco de dados).
     private static final List<Produto> CATALOGO = List.of(
-            new Produto("Dipirona 500mg", 12.90, false),
-            new Produto("Protetor Solar FPS 50", 59.90, false),
-            new Produto("Amoxicilina 500mg", 34.50, true),
-            new Produto("Vitamina C", 25.00, false),
-            new Produto("Álcool em gel 70%", 9.90, false)
+            new Produto("Dipirona 500mg", new BigDecimal("12.90"), false),
+            new Produto("Protetor Solar FPS 50", new BigDecimal("59.90"), false),
+            new Produto("Amoxicilina 500mg", new BigDecimal("34.50"), true),
+            new Produto("Vitamina C", new BigDecimal("25.00"), false),
+            new Produto("Álcool em gel 70%", new BigDecimal("9.90"), false)
     );
 
     public static void main(String[] args) {

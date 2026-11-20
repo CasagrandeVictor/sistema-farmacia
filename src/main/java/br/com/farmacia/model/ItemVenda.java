@@ -1,5 +1,9 @@
 package br.com.farmacia.model;
 
+import br.com.farmacia.util.Moeda;
+
+import java.math.BigDecimal;
+
 /**
  * Representa um item dentro de uma venda: um produto e a quantidade comprada.
  */
@@ -28,13 +32,13 @@ public class ItemVenda {
     }
 
     /** Preço do item = preço unitário x quantidade. */
-    public double getSubtotal() {
-        return produto.getPreco() * quantidade;
+    public BigDecimal getSubtotal() {
+        return produto.getPreco().multiply(BigDecimal.valueOf(quantidade));
     }
 
     @Override
     public String toString() {
-        return String.format("%dx %s = R$ %.2f",
-                quantidade, produto.getNome(), getSubtotal());
+        return String.format("%dx %s = %s",
+                quantidade, produto.getNome(), Moeda.formatar(getSubtotal()));
     }
 }

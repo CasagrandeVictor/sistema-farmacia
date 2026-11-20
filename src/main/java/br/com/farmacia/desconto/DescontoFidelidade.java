@@ -2,6 +2,9 @@ package br.com.farmacia.desconto;
 
 import br.com.farmacia.model.Cliente;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * ESTRATÉGIA CONCRETA — desconto para clientes do programa de fidelidade.
  *
@@ -9,14 +12,14 @@ import br.com.farmacia.model.Cliente;
  */
 public class DescontoFidelidade implements PoliticaDesconto {
 
-    private static final double PERCENTUAL = 0.10;
+    private static final BigDecimal PERCENTUAL = new BigDecimal("0.10");
 
     @Override
-    public double calcularDesconto(double subtotal, Cliente cliente) {
+    public BigDecimal calcularDesconto(BigDecimal subtotal, Cliente cliente) {
         if (seAplica(cliente)) {
-            return subtotal * PERCENTUAL;
+            return subtotal.multiply(PERCENTUAL).setScale(2, RoundingMode.HALF_EVEN);
         }
-        return 0.0;
+        return BigDecimal.ZERO;
     }
 
     @Override

@@ -2,6 +2,8 @@ package br.com.farmacia.desconto;
 
 import br.com.farmacia.model.Cliente;
 
+import java.math.BigDecimal;
+
 /**
  * ESTRATÉGIA CONCRETA — nenhuma política de desconto.
  *
@@ -11,8 +13,8 @@ import br.com.farmacia.model.Cliente;
 public class SemDesconto implements PoliticaDesconto {
 
     @Override
-    public double calcularDesconto(double subtotal, Cliente cliente) {
-        return 0.0;
+    public BigDecimal calcularDesconto(BigDecimal subtotal, Cliente cliente) {
+        return BigDecimal.ZERO;
     }
 
     @Override

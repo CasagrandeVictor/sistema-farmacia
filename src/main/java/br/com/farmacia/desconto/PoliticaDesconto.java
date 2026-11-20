@@ -2,6 +2,8 @@ package br.com.farmacia.desconto;
 
 import br.com.farmacia.model.Cliente;
 
+import java.math.BigDecimal;
+
 /**
  * PADRÃO STRATEGY — interface da estratégia.
  *
@@ -18,9 +20,9 @@ public interface PoliticaDesconto {
      *
      * @param subtotal valor da venda antes do desconto
      * @param cliente  cliente da venda (algumas políticas dependem dele)
-     * @return o valor a ser abatido do subtotal
+     * @return o valor a ser abatido do subtotal, com 2 casas decimais
      */
-    double calcularDesconto(double subtotal, Cliente cliente);
+    BigDecimal calcularDesconto(BigDecimal subtotal, Cliente cliente);
 
     /**
      * Indica se o cliente é elegível para esta política. Permite ao sistema
