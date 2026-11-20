@@ -22,6 +22,12 @@ public interface PoliticaDesconto {
      */
     double calcularDesconto(double subtotal, Cliente cliente);
 
+    /**
+     * Indica se o cliente é elegível para esta política. Permite ao sistema
+     * avisar o usuário antes de fechar a venda com uma política que não vale.
+     */
+    boolean seAplica(Cliente cliente);
+
     /** Nome da política, usado na exibição do cupom. */
     String getDescricao();
 }

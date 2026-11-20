@@ -14,10 +14,15 @@ public class DescontoIdoso implements PoliticaDesconto {
 
     @Override
     public double calcularDesconto(double subtotal, Cliente cliente) {
-        if (cliente != null && cliente.isIdoso()) {
+        if (seAplica(cliente)) {
             return subtotal * PERCENTUAL;
         }
         return 0.0;
+    }
+
+    @Override
+    public boolean seAplica(Cliente cliente) {
+        return cliente != null && cliente.isIdoso();
     }
 
     @Override

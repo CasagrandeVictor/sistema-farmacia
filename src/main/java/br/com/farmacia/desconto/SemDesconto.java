@@ -16,6 +16,11 @@ public class SemDesconto implements PoliticaDesconto {
     }
 
     @Override
+    public boolean seAplica(Cliente cliente) {
+        return true;
+    }
+
+    @Override
     public String getDescricao() {
         return "Sem desconto";
     }

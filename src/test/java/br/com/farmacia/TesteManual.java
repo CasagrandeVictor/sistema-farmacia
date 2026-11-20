@@ -72,6 +72,19 @@ public class TesteManual {
         verifica("cliente de 60 anos com desconto idoso", 6.00,
                 new DescontoIdoso().calcularDesconto(40.00, new Cliente("Paula", 60, false)));
 
+        // STRATEGY: seAplica indica a elegibilidade do cliente para cada política.
+        verificaVerdadeiro("sem desconto se aplica a qualquer cliente",
+                new SemDesconto().seAplica(comum));
+        verificaVerdadeiro("desconto idoso se aplica a idoso", new DescontoIdoso().seAplica(idoso));
+        verificaVerdadeiro("desconto idoso não se aplica a cliente comum",
+                !new DescontoIdoso().seAplica(comum));
+        verificaVerdadeiro("desconto idoso se aplica a 60 anos",
+                new DescontoIdoso().seAplica(new Cliente("Paula", 60, false)));
+        verificaVerdadeiro("desconto fidelidade se aplica a cliente fidelidade",
+                new DescontoFidelidade().seAplica(fiel));
+        verificaVerdadeiro("desconto fidelidade não se aplica a idoso sem cadastro",
+                !new DescontoFidelidade().seAplica(idoso));
+
         // BUILDER: reutilizar o construtor não pode alterar uma venda já finalizada.
         Venda.Builder builder = new Venda.Builder(fiel)
                 .adicionarItem(vitamina, 1)
@@ -150,6 +163,15 @@ public class TesteManual {
             System.out.printf("OK: %s = %.2f%n", nome, obtido);
         } else {
             System.out.printf("FALHA: %s esperado %.2f, obtido %.2f%n", nome, esperado, obtido);
+            falhas++;
+        }
+    }
+
+    private static void verificaVerdadeiro(String nome, boolean condicao) {
+        if (condicao) {
+            System.out.println("OK: " + nome);
+        } else {
+            System.out.println("FALHA: " + nome);
             falhas++;
         }
     }

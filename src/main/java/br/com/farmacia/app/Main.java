@@ -165,12 +165,25 @@ public class Main {
         System.out.println("  1 - Sem desconto");
         System.out.println("  2 - Desconto idoso (15%)");
         System.out.println("  3 - Desconto fidelidade (10%)");
-        String op = sc.nextLine().trim();
-        PoliticaDesconto politica = switch (op) {
-            case "2" -> new DescontoIdoso();
-            case "3" -> new DescontoFidelidade();
-            default -> new SemDesconto();
-        };
+        PoliticaDesconto politica = null;
+        while (politica == null) {
+            System.out.print("Escolha: ");
+            String op = sc.nextLine().trim();
+            politica = switch (op) {
+                case "1" -> new SemDesconto();
+                case "2" -> new DescontoIdoso();
+                case "3" -> new DescontoFidelidade();
+                default -> null;
+            };
+            if (politica == null) {
+                System.out.println("Opção inválida.");
+            }
+        }
+        if (!politica.seAplica(cliente)) {
+            System.out.println("Cliente não elegível para " + politica.getDescricao()
+                    + "; venda seguirá sem desconto.");
+            politica = new SemDesconto();
+        }
         builder.comDesconto(politica);
 
         // Entrega?

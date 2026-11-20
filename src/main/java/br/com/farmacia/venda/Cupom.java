@@ -25,8 +25,10 @@ public final class Cupom {
 
         sb.append("---------------------------------------\n");
         sb.append(String.format("Subtotal.........: R$ %.2f%n", venda.getSubtotal()));
-        sb.append(String.format("%s: -R$ %.2f%n",
-                venda.getPoliticaDesconto().getDescricao(), venda.getDesconto()));
+        if (venda.getDesconto() > 0) {
+            sb.append(String.format("%s: -R$ %.2f%n",
+                    venda.getPoliticaDesconto().getDescricao(), venda.getDesconto()));
+        }
 
         if (venda.isEntrega()) {
             sb.append(String.format("Taxa de entrega..: R$ %.2f%n", venda.getTaxaEntrega()));
