@@ -97,6 +97,13 @@ public class Main {
                 .comObservacao("Presente de aniversário")
                 .build();
         System.out.println(Cupom.formatar(v3));
+
+        // Venda 4: medicamento controlado -> o Builder só aceita com receita
+        Venda v4 = new Venda.Builder(ana)
+                .adicionarItem(CATALOGO.get(2), 1) // Amoxicilina (exige receita)
+                .comReceita("CRM-SC 12345")
+                .build();
+        System.out.println(Cupom.formatar(v4));
     }
 
     /** Fluxo interativo: o usuário monta a própria venda. */
@@ -114,6 +121,7 @@ public class Main {
         Venda.Builder builder = new Venda.Builder(cliente);
 
         // Escolha dos produtos
+        String receita = null; // pedida só quando entra um produto controlado
         boolean adicionando = true;
         while (adicionando) {
             System.out.println("\nCatálogo:");
@@ -124,9 +132,25 @@ public class Main {
             if (escolha == 0) {
                 adicionando = false;
             } else if (escolha >= 1 && escolha <= CATALOGO.size()) {
+                Produto produto = CATALOGO.get(escolha - 1);
+                if (produto.isExigeReceita() && receita == null) {
+                    System.out.print("Cliente apresentou receita? (s/n): ");
+                    if (!sc.nextLine().trim().equalsIgnoreCase("s")) {
+                        System.out.println("Item recusado: " + produto.getNome()
+                                + " só pode ser vendido com receita médica.");
+                        continue;
+                    }
+                    String identificacao = "";
+                    while (identificacao.isBlank()) {
+                        System.out.print("Identificação da receita (CRM/número): ");
+                        identificacao = sc.nextLine().trim();
+                    }
+                    receita = identificacao;
+                    builder.comReceita(receita);
+                }
                 int qtd = lerInteiro(sc, "Quantidade: ");
                 try {
-                    builder.adicionarItem(CATALOGO.get(escolha - 1), qtd);
+                    builder.adicionarItem(produto, qtd);
                     System.out.println("Item adicionado.");
                 } catch (IllegalArgumentException e) {
                     System.out.println("Erro: " + e.getMessage());

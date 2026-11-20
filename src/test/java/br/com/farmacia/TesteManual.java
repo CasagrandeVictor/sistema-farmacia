@@ -7,6 +7,8 @@ import br.com.farmacia.model.Cliente;
 import br.com.farmacia.model.Produto;
 import br.com.farmacia.venda.Venda;
 
+import java.util.Objects;
+
 /**
  * Teste manual simples (sem framework, para não precisar de dependências).
  * Verifica as regras principais dos dois padrões. Roda com:
@@ -120,6 +122,23 @@ public class TesteManual {
             System.out.println("OK: entrega sem endereço é rejeitada");
         }
 
+        // BUILDER: produto controlado exige receita médica
+        Produto amoxicilina = new Produto("Amoxicilina", 30.00, true);
+        verificaExcecao("produto controlado sem receita é rejeitado", IllegalStateException.class,
+                () -> new Venda.Builder(comum).adicionarItem(amoxicilina, 1).build());
+        verificaExcecao("produto controlado com receita em branco é rejeitado",
+                IllegalStateException.class,
+                () -> new Venda.Builder(comum).adicionarItem(amoxicilina, 1).comReceita(" ").build());
+        Venda comReceita = new Venda.Builder(comum)
+                .adicionarItem(amoxicilina, 1)
+                .comReceita("CRM-SC 12345")
+                .build();
+        verificaTexto("produto controlado com receita é aceito", "CRM-SC 12345",
+                comReceita.getReceita());
+        Venda semControlado = new Venda.Builder(comum).adicionarItem(vitamina, 1).build();
+        verificaTexto("venda sem produto controlado não exige receita", null,
+                semControlado.getReceita());
+
         System.out.println("\n" + (falhas == 0 ? "TODOS OS TESTES PASSARAM" : falhas + " TESTE(S) FALHARAM"));
         if (falhas > 0) {
             System.exit(1);
@@ -131,6 +150,15 @@ public class TesteManual {
             System.out.printf("OK: %s = %.2f%n", nome, obtido);
         } else {
             System.out.printf("FALHA: %s esperado %.2f, obtido %.2f%n", nome, esperado, obtido);
+            falhas++;
+        }
+    }
+
+    private static void verificaTexto(String nome, String esperado, String obtido) {
+        if (Objects.equals(esperado, obtido)) {
+            System.out.println("OK: " + nome);
+        } else {
+            System.out.printf("FALHA: %s esperado %s, obtido %s%n", nome, esperado, obtido);
             falhas++;
         }
     }

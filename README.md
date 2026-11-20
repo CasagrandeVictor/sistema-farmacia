@@ -168,8 +168,9 @@ com métodos fluentes, e valida tudo no `build()`.
 | Builder | `venda.Venda.Builder` (classe interna estática) |
 
 O cliente e ao menos um item são obrigatórios; os demais são opcionais. O
-`build()` recusa venda sem itens e entrega sem endereço, garantindo que a Venda
-só nasce em estado válido.
+`build()` recusa venda sem itens, entrega sem endereço e produto que exige
+receita sem a identificação da receita (`.comReceita("CRM-SC 12345")`),
+garantindo que a Venda só nasce em estado válido.
 Cada venda recebe uma cópia imutável dos itens, então reutilizar o Builder
 para montar outra venda não altera os itens nem os totais das anteriores.
 

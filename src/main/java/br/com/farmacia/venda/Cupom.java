@@ -35,6 +35,9 @@ public final class Cupom {
         if (venda.isEmbrulhoPresente()) {
             sb.append("Embrulho.........: presente\n");
         }
+        if (venda.getReceita() != null && !venda.getReceita().isBlank()) {
+            sb.append("Receita.........: ").append(venda.getReceita()).append("\n");
+        }
         if (venda.getObservacao() != null && !venda.getObservacao().isBlank()) {
             sb.append("Observação.......: ").append(venda.getObservacao()).append("\n");
         }

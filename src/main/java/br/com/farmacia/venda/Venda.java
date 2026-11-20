@@ -13,7 +13,7 @@ import java.util.List;
  * Entidade Venda — o produto final construído pelo Builder.
  *
  * Uma venda tem muitos campos, sendo vários opcionais (observação, entrega,
- * endereço, embrulho para presente) e combináveis de formas diferentes
+ * endereço, embrulho para presente, receita) e combináveis de formas diferentes
  * (venda de balcão, venda com entrega, venda para presente). Para evitar
  * construtores telescópicos, a Venda é montada pelo PADRÃO BUILDER: o
  * construtor é privado e só o {@link Builder} cria instâncias.
@@ -33,6 +33,7 @@ public class Venda {
     private final String enderecoEntrega;
     private final boolean embrulhoPresente;
     private final String observacao;
+    private final String receita;
 
     // Construtor PRIVADO: ninguém cria uma Venda diretamente, só pelo Builder.
     private Venda(Builder builder) {
@@ -43,6 +44,7 @@ public class Venda {
         this.enderecoEntrega = builder.enderecoEntrega;
         this.embrulhoPresente = builder.embrulhoPresente;
         this.observacao = builder.observacao;
+        this.receita = builder.receita;
     }
 
     /** Soma dos subtotais de todos os itens, antes do desconto. */
@@ -97,6 +99,11 @@ public class Venda {
         return observacao;
     }
 
+    /** Identificação da receita médica (ex.: CRM/número), ou null se não houver. */
+    public String getReceita() {
+        return receita;
+    }
+
     // ======================================================================
     //  PADRÃO BUILDER — classe interna estática.
     //
@@ -117,6 +124,7 @@ public class Venda {
         private String enderecoEntrega = null;
         private boolean embrulhoPresente = false;
         private String observacao = null;
+        private String receita = null;
 
         /** O cliente é obrigatório para iniciar uma venda. */
         public Builder(Cliente cliente) {
@@ -162,6 +170,12 @@ public class Venda {
             return this;
         }
 
+        /** Identificação da receita médica (ex.: CRM/número) apresentada pelo cliente. */
+        public Builder comReceita(String identificacaoReceita) {
+            this.receita = identificacaoReceita;
+            return this;
+        }
+
         /**
          * Valida as regras obrigatórias e devolve a Venda pronta.
          * É o único ponto em que uma Venda nasce — e só nasce se estiver
@@ -173,6 +187,13 @@ public class Venda {
             }
             if (entrega && (enderecoEntrega == null || enderecoEntrega.isBlank())) {
                 throw new IllegalStateException("Venda com entrega exige um endereço.");
+            }
+            boolean semReceita = receita == null || receita.isBlank();
+            for (ItemVenda item : itens) {
+                if (item.getProduto().isExigeReceita() && semReceita) {
+                    throw new IllegalStateException("Produto " + item.getProduto().getNome()
+                            + " exige receita médica.");
+                }
             }
             return new Venda(this);
         }
