@@ -36,21 +36,25 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         System.out.println("=== Sistema de Farmácia (Strategy + Builder) ===");
 
-        boolean rodando = true;
-        while (rodando) {
-            System.out.println();
-            System.out.println("1 - Rodar demonstração");
-            System.out.println("2 - Montar uma venda");
-            System.out.println("0 - Sair");
-            System.out.print("Escolha: ");
-            String opcao = sc.nextLine().trim();
+        try {
+            boolean rodando = true;
+            while (rodando) {
+                System.out.println();
+                System.out.println("1 - Rodar demonstração");
+                System.out.println("2 - Montar uma venda");
+                System.out.println("0 - Sair");
+                String opcao = lerLinha(sc, "Escolha: ");
 
-            switch (opcao) {
-                case "1" -> demonstracao();
-                case "2" -> montarVenda(sc);
-                case "0" -> rodando = false;
-                default -> System.out.println("Opção inválida.");
+                switch (opcao) {
+                    case "1" -> demonstracao();
+                    case "2" -> montarVenda(sc);
+                    case "0" -> rodando = false;
+                    default -> System.out.println("Opção inválida.");
+                }
             }
+        } catch (FimDaEntrada e) {
+            // A entrada acabou (ex.: Ctrl+D ou fim do pipe): encerra normalmente.
+            System.out.println();
         }
         System.out.println("Até logo!");
     }
@@ -110,18 +114,14 @@ public class Main {
     private static void montarVenda(Scanner sc) {
         System.out.println("\n----- NOVA VENDA -----");
 
-        System.out.print("Nome do cliente: ");
-        String nome = sc.nextLine().trim();
-        int idade = lerInteiro(sc, "Idade do cliente: ");
-        System.out.print("Cliente fidelidade? (s/n): ");
-        boolean fidelidade = sc.nextLine().trim().equalsIgnoreCase("s");
-        Cliente cliente = new Cliente(nome, idade, fidelidade);
+        Cliente cliente = lerCliente(sc);
 
         // Começa a montar a venda com o Builder
         Venda.Builder builder = new Venda.Builder(cliente);
 
         // Escolha dos produtos
         String receita = null; // pedida só quando entra um produto controlado
+        int itensAdicionados = 0;
         boolean adicionando = true;
         while (adicionando) {
             System.out.println("\nCatálogo:");
@@ -130,27 +130,26 @@ public class Main {
             }
             int escolha = lerInteiro(sc, "Produto (número, 0 para encerrar): ");
             if (escolha == 0) {
-                adicionando = false;
+                if (itensAdicionados == 0) {
+                    System.out.println("Adicione ao menos um item.");
+                } else {
+                    adicionando = false;
+                }
             } else if (escolha >= 1 && escolha <= CATALOGO.size()) {
                 Produto produto = CATALOGO.get(escolha - 1);
                 if (produto.isExigeReceita() && receita == null) {
-                    System.out.print("Cliente apresentou receita? (s/n): ");
-                    if (!sc.nextLine().trim().equalsIgnoreCase("s")) {
+                    if (!lerSimNao(sc, "Cliente apresentou receita? (s/n): ")) {
                         System.out.println("Item recusado: " + produto.getNome()
                                 + " só pode ser vendido com receita médica.");
                         continue;
                     }
-                    String identificacao = "";
-                    while (identificacao.isBlank()) {
-                        System.out.print("Identificação da receita (CRM/número): ");
-                        identificacao = sc.nextLine().trim();
-                    }
-                    receita = identificacao;
+                    receita = lerTextoObrigatorio(sc, "Identificação da receita (CRM/número): ");
                     builder.comReceita(receita);
                 }
                 int qtd = lerInteiro(sc, "Quantidade: ");
                 try {
                     builder.adicionarItem(produto, qtd);
+                    itensAdicionados++;
                     System.out.println("Item adicionado.");
                 } catch (IllegalArgumentException e) {
                     System.out.println("Erro: " + e.getMessage());
@@ -167,8 +166,7 @@ public class Main {
         System.out.println("  3 - Desconto fidelidade (10%)");
         PoliticaDesconto politica = null;
         while (politica == null) {
-            System.out.print("Escolha: ");
-            String op = sc.nextLine().trim();
+            String op = lerLinha(sc, "Escolha: ");
             politica = switch (op) {
                 case "1" -> new SemDesconto();
                 case "2" -> new DescontoIdoso();
@@ -187,21 +185,17 @@ public class Main {
         builder.comDesconto(politica);
 
         // Entrega?
-        System.out.print("Venda com entrega? (s/n): ");
-        if (sc.nextLine().trim().equalsIgnoreCase("s")) {
-            System.out.print("Endereço de entrega: ");
-            builder.comEntrega(sc.nextLine().trim());
+        if (lerSimNao(sc, "Venda com entrega? (s/n): ")) {
+            builder.comEntrega(lerTextoObrigatorio(sc, "Endereço de entrega: "));
         }
 
         // Embrulho para presente?
-        System.out.print("Embrulhar para presente? (s/n): ");
-        if (sc.nextLine().trim().equalsIgnoreCase("s")) {
+        if (lerSimNao(sc, "Embrulhar para presente? (s/n): ")) {
             builder.comEmbrulhoPresente();
         }
 
         // Observação opcional
-        System.out.print("Observação (Enter para pular): ");
-        String observacao = sc.nextLine().trim();
+        String observacao = lerLinha(sc, "Observação (Enter para pular): ");
         if (!observacao.isBlank()) {
             builder.comObservacao(observacao);
         }
@@ -215,15 +209,60 @@ public class Main {
         }
     }
 
+    /** Pede nome, idade e fidelidade, repetindo até nome e idade serem válidos. */
+    private static Cliente lerCliente(Scanner sc) {
+        String nome = lerTextoObrigatorio(sc, "Nome do cliente: ");
+        int idade = lerInteiro(sc, "Idade do cliente: ");
+        while (idade < 0 || idade > Cliente.IDADE_MAXIMA) {
+            System.out.println("Idade deve estar entre 0 e " + Cliente.IDADE_MAXIMA + " anos.");
+            idade = lerInteiro(sc, "Idade do cliente: ");
+        }
+        boolean fidelidade = lerSimNao(sc, "Cliente fidelidade? (s/n): ");
+        return new Cliente(nome, idade, fidelidade);
+    }
+
+    /**
+     * Lê uma linha da entrada, sem espaços nas pontas. Se a entrada acabar,
+     * lança {@link FimDaEntrada} para o programa encerrar sem erro.
+     */
+    private static String lerLinha(Scanner sc, String prompt) {
+        System.out.print(prompt);
+        if (!sc.hasNextLine()) {
+            throw new FimDaEntrada();
+        }
+        return sc.nextLine().trim();
+    }
+
+    /** Repete a pergunta até o usuário digitar algo que não esteja em branco. */
+    private static String lerTextoObrigatorio(Scanner sc, String prompt) {
+        while (true) {
+            String linha = lerLinha(sc, prompt);
+            if (!linha.isBlank()) {
+                return linha;
+            }
+            System.out.println("Este campo não pode ficar em branco.");
+        }
+    }
+
+    private static boolean lerSimNao(Scanner sc, String prompt) {
+        return lerLinha(sc, prompt).equalsIgnoreCase("s");
+    }
+
     private static int lerInteiro(Scanner sc, String prompt) {
         while (true) {
-            System.out.print(prompt);
-            String linha = sc.nextLine().trim();
+            String linha = lerLinha(sc, prompt);
             try {
                 return Integer.parseInt(linha);
             } catch (NumberFormatException e) {
                 System.out.println("Digite um número válido.");
             }
+        }
+    }
+
+    /** Sinaliza que a entrada padrão terminou. */
+    private static final class FimDaEntrada extends RuntimeException {
+        FimDaEntrada() {
+            super(null, null, false, false);
         }
     }
 }

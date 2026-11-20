@@ -4,6 +4,7 @@ import br.com.farmacia.desconto.DescontoFidelidade;
 import br.com.farmacia.desconto.DescontoIdoso;
 import br.com.farmacia.desconto.SemDesconto;
 import br.com.farmacia.model.Cliente;
+import br.com.farmacia.model.ItemVenda;
 import br.com.farmacia.model.Produto;
 import br.com.farmacia.venda.Venda;
 
@@ -134,6 +135,29 @@ public class TesteManual {
         } catch (IllegalStateException e) {
             System.out.println("OK: entrega sem endereço é rejeitada");
         }
+
+        // ENTIDADES: validação dos dados de entrada
+        verificaExcecao("cliente com nome nulo é rejeitado", IllegalArgumentException.class,
+                () -> new Cliente(null, 30, false));
+        verificaExcecao("cliente com nome em branco é rejeitado", IllegalArgumentException.class,
+                () -> new Cliente("  ", 30, false));
+        verificaExcecao("cliente com idade negativa é rejeitado", IllegalArgumentException.class,
+                () -> new Cliente("Ana", -1, false));
+        verificaExcecao("cliente com idade acima de 130 é rejeitado",
+                IllegalArgumentException.class, () -> new Cliente("Ana", 131, false));
+        verificaVerdadeiro("cliente com idade 0 e 130 é aceito",
+                new Cliente("Bebê", 0, false).getIdade() == 0
+                        && new Cliente("Ana", 130, false).getIdade() == 130);
+        verificaExcecao("produto com nome em branco é rejeitado", IllegalArgumentException.class,
+                () -> new Produto(" ", 10.00, false));
+        verificaExcecao("produto com preço zero é rejeitado", IllegalArgumentException.class,
+                () -> new Produto("Dipirona", 0.00, false));
+        verificaExcecao("produto com preço negativo é rejeitado", IllegalArgumentException.class,
+                () -> new Produto("Dipirona", -1.00, false));
+        verificaExcecao("item com produto nulo é rejeitado", IllegalArgumentException.class,
+                () -> new ItemVenda(null, 1));
+        verificaExcecao("item com quantidade zero é rejeitado", IllegalArgumentException.class,
+                () -> new ItemVenda(vitamina, 0));
 
         // BUILDER: produto controlado exige receita médica
         Produto amoxicilina = new Produto("Amoxicilina", 30.00, true);

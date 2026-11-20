@@ -13,6 +13,12 @@ public class Produto {
     private final boolean exigeReceita;
 
     public Produto(String nome, double preco, boolean exigeReceita) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome do produto é obrigatório.");
+        }
+        if (preco <= 0) {
+            throw new IllegalArgumentException("Preço do produto deve ser maior que zero.");
+        }
         this.nome = nome;
         this.preco = preco;
         this.exigeReceita = exigeReceita;

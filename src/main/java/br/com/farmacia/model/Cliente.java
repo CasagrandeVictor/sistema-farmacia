@@ -9,11 +9,21 @@ package br.com.farmacia.model;
  */
 public class Cliente {
 
+    /** Maior idade aceita no cadastro. */
+    public static final int IDADE_MAXIMA = 130;
+
     private final String nome;
     private final int idade;
     private final boolean fidelidade;
 
     public Cliente(String nome, int idade, boolean fidelidade) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome do cliente é obrigatório.");
+        }
+        if (idade < 0 || idade > IDADE_MAXIMA) {
+            throw new IllegalArgumentException(
+                    "Idade deve estar entre 0 e " + IDADE_MAXIMA + " anos.");
+        }
         this.nome = nome;
         this.idade = idade;
         this.fidelidade = fidelidade;

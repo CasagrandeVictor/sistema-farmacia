@@ -9,6 +9,12 @@ public class ItemVenda {
     private final int quantidade;
 
     public ItemVenda(Produto produto, int quantidade) {
+        if (produto == null) {
+            throw new IllegalArgumentException("Item da venda precisa de um produto.");
+        }
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
+        }
         this.produto = produto;
         this.quantidade = quantidade;
     }
