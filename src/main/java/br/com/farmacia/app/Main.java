@@ -8,6 +8,7 @@ import br.com.farmacia.model.Cliente;
 import br.com.farmacia.model.Produto;
 import br.com.farmacia.venda.Cupom;
 import br.com.farmacia.venda.Venda;
+import br.com.farmacia.desconto.DescontoCompraMinima;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,8 +31,7 @@ public class Main {
             new Produto("Protetor Solar FPS 50", new BigDecimal("59.90"), false),
             new Produto("Amoxicilina 500mg", new BigDecimal("34.50"), true),
             new Produto("Vitamina C", new BigDecimal("25.00"), false),
-            new Produto("Álcool em gel 70%", new BigDecimal("9.90"), false)
-    );
+            new Produto("Álcool em gel 70%", new BigDecimal("9.90"), false));
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -70,9 +70,9 @@ public class Main {
     private static void demonstracao() {
         System.out.println("\n----- DEMONSTRAÇÃO -----");
 
-        Cliente joao = new Cliente("João", 70, false);      // idoso
-        Cliente maria = new Cliente("Maria", 30, true);     // fidelidade
-        Cliente ana = new Cliente("Ana", 25, false);        // comum
+        Cliente joao = new Cliente("João", 70, false); // idoso
+        Cliente maria = new Cliente("Maria", 30, true); // fidelidade
+        Cliente ana = new Cliente("Ana", 25, false); // comum
 
         Produto p1 = CATALOGO.get(0); // Dipirona
         Produto p2 = CATALOGO.get(3); // Vitamina C
@@ -111,6 +111,15 @@ public class Main {
                 .comReceita("CRM-SC 12345")
                 .build();
         System.out.println(Cupom.formatar(v4));
+
+        Venda promocao = new Venda.Builder(maria)
+                .adicionarItem(CATALOGO.get(1), 2)
+                .comDesconto(new DescontoCompraMinima())
+                .comEntrega("Rua das Flores, 123")
+                .comHorarioEntrega("amanhã entre 14h e 16h")
+                .build();
+
+        System.out.println(Cupom.formatar(promocao));
     }
 
     /** Fluxo interativo: o usuário monta a própria venda. */

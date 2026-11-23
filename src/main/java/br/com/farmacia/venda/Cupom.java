@@ -44,6 +44,10 @@ public final class Cupom {
         if (venda.getObservacao() != null && !venda.getObservacao().isBlank()) {
             sb.append("Observação.......: ").append(venda.getObservacao()).append("\n");
         }
+        if (venda.getHorarioEntrega() != null) {
+            sb.append("Horário entrega..: ")
+                    .append(venda.getHorarioEntrega()).append("\n");
+        }
 
         sb.append("---------------------------------------\n");
         sb.append("TOTAL............: ").append(Moeda.formatar(venda.getTotal())).append("\n");
