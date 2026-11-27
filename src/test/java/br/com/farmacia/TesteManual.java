@@ -29,9 +29,10 @@ public class TesteManual {
         Produto dipirona = new Produto("Dipirona", new BigDecimal("10.00"), false);
         Produto vitamina = new Produto("Vitamina C", new BigDecimal("20.00"), false);
 
-        Cliente idoso = new Cliente("João", 70, false);
-        Cliente fiel = new Cliente("Maria", 30, true);
-        Cliente comum = new Cliente("Ana", 25, false);
+        Cliente idoso = new Cliente("João", 70, false, false);
+        Cliente fiel = new Cliente("Maria", 30, true, false);
+        Cliente comum = new Cliente("Ana", 25, false, false);
+        Cliente inss = new Cliente("Cleiton", 46, false, true);
 
         // STRATEGY: desconto idoso = 15% sobre 40,00 = 6,00 -> total 34,00
         Venda v1 = new Venda.Builder(idoso)
@@ -71,9 +72,9 @@ public class TesteManual {
         verifica("cliente comum sem desconto fidelidade", "0.00",
                 new DescontoFidelidade().calcularDesconto(new BigDecimal("40.00"), comum));
         verifica("cliente de 59 anos sem desconto idoso", "0.00",
-                new DescontoIdoso().calcularDesconto(new BigDecimal("40.00"), new Cliente("Pedro", 59, false)));
+                new DescontoIdoso().calcularDesconto(new BigDecimal("40.00"), new Cliente("Pedro", 59, false, false)));
         verifica("cliente de 60 anos com desconto idoso", "6.00",
-                new DescontoIdoso().calcularDesconto(new BigDecimal("40.00"), new Cliente("Paula", 60, false)));
+                new DescontoIdoso().calcularDesconto(new BigDecimal("40.00"), new Cliente("Paula", 60, false, false)));
 
         // STRATEGY: seAplica indica a elegibilidade do cliente para cada política.
         verificaVerdadeiro("sem desconto se aplica a qualquer cliente",
@@ -82,7 +83,7 @@ public class TesteManual {
         verificaVerdadeiro("desconto idoso não se aplica a cliente comum",
                 !new DescontoIdoso().seAplica(comum));
         verificaVerdadeiro("desconto idoso se aplica a 60 anos",
-                new DescontoIdoso().seAplica(new Cliente("Paula", 60, false)));
+                new DescontoIdoso().seAplica(new Cliente("Paula", 60, false, false)));
         verificaVerdadeiro("desconto fidelidade se aplica a cliente fidelidade",
                 new DescontoFidelidade().seAplica(fiel));
         verificaVerdadeiro("desconto fidelidade não se aplica a idoso sem cadastro",
@@ -159,16 +160,16 @@ public class TesteManual {
 
         // ENTIDADES: validação dos dados de entrada
         verificaExcecao("cliente com nome nulo é rejeitado", IllegalArgumentException.class,
-                () -> new Cliente(null, 30, false));
+                () -> new Cliente(null, 30, false, false));
         verificaExcecao("cliente com nome em branco é rejeitado", IllegalArgumentException.class,
-                () -> new Cliente("  ", 30, false));
+                () -> new Cliente("  ", 30, false, false));
         verificaExcecao("cliente com idade negativa é rejeitado", IllegalArgumentException.class,
-                () -> new Cliente("Ana", -1, false));
+                () -> new Cliente("Ana", -1, false, false));
         verificaExcecao("cliente com idade acima de 130 é rejeitado",
-                IllegalArgumentException.class, () -> new Cliente("Ana", 131, false));
+                IllegalArgumentException.class, () -> new Cliente("Ana", 131, false, false));
         verificaVerdadeiro("cliente com idade 0 e 130 é aceito",
-                new Cliente("Bebê", 0, false).getIdade() == 0
-                        && new Cliente("Ana", 130, false).getIdade() == 130);
+                new Cliente("Bebê", 0, false, false).getIdade() == 0
+                        && new Cliente("Ana", 130, false, false).getIdade() == 130);
         verificaExcecao("produto com nome em branco é rejeitado", IllegalArgumentException.class,
                 () -> new Produto(" ", new BigDecimal("10.00"), false));
         verificaExcecao("produto com preço zero é rejeitado", IllegalArgumentException.class,

@@ -1,14 +1,10 @@
 package br.com.farmacia.app;
 
-import br.com.farmacia.desconto.DescontoFidelidade;
-import br.com.farmacia.desconto.DescontoIdoso;
-import br.com.farmacia.desconto.PoliticaDesconto;
-import br.com.farmacia.desconto.SemDesconto;
+import br.com.farmacia.desconto.*;
 import br.com.farmacia.model.Cliente;
 import br.com.farmacia.model.Produto;
 import br.com.farmacia.venda.Cupom;
 import br.com.farmacia.venda.Venda;
-import br.com.farmacia.desconto.DescontoCompraMinima;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -70,9 +66,10 @@ public class Main {
     private static void demonstracao() {
         System.out.println("\n----- DEMONSTRAÇÃO -----");
 
-        Cliente joao = new Cliente("João", 70, false); // idoso
-        Cliente maria = new Cliente("Maria", 30, true); // fidelidade
-        Cliente ana = new Cliente("Ana", 25, false); // comum
+        Cliente joao = new Cliente("João", 70, false, false); // idoso
+        Cliente maria = new Cliente("Maria", 30, true, false); // fidelidade
+        Cliente ana = new Cliente("Ana", 25, false, false); // comum
+        Cliente cleiton = new Cliente("Cleiton", 46, false, true); // inss
 
         Produto p1 = CATALOGO.get(0); // Dipirona
         Produto p2 = CATALOGO.get(3); // Vitamina C
@@ -176,6 +173,7 @@ public class Main {
         System.out.println("  1 - Sem desconto");
         System.out.println("  2 - Desconto idoso (15%)");
         System.out.println("  3 - Desconto fidelidade (10%)");
+        System.out.println("  4 - Desconto carteira INSS (7%)");
         PoliticaDesconto politica = null;
         while (politica == null) {
             String op = lerLinha(sc, "Escolha: ");
@@ -183,6 +181,7 @@ public class Main {
                 case "1" -> new SemDesconto();
                 case "2" -> new DescontoIdoso();
                 case "3" -> new DescontoFidelidade();
+                case "4" -> new DescontoCarteiraINSS();
                 default -> null;
             };
             if (politica == null) {
@@ -230,7 +229,8 @@ public class Main {
             idade = lerInteiro(sc, "Idade do cliente: ");
         }
         boolean fidelidade = lerSimNao(sc, "Cliente fidelidade? (s/n): ");
-        return new Cliente(nome, idade, fidelidade);
+        boolean carteiraInss = lerSimNao(sc, "Cliente tem carteira INSS? (s/n): ");
+        return new Cliente(nome, idade, fidelidade, carteiraInss);
     }
 
     /**

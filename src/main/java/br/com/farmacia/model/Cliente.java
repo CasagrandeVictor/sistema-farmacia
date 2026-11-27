@@ -15,8 +15,9 @@ public class Cliente {
     private final String nome;
     private final int idade;
     private final boolean fidelidade;
+    private final boolean carteiraINSS;
 
-    public Cliente(String nome, int idade, boolean fidelidade) {
+    public Cliente(String nome, int idade, boolean fidelidade, boolean carteiraINSS) {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome do cliente é obrigatório.");
         }
@@ -27,6 +28,7 @@ public class Cliente {
         this.nome = nome;
         this.idade = idade;
         this.fidelidade = fidelidade;
+        this.carteiraINSS = carteiraINSS;
     }
 
     public String getNome() {
@@ -39,6 +41,10 @@ public class Cliente {
 
     public boolean isFidelidade() {
         return fidelidade;
+    }
+
+    public boolean hasCarteiraINSS() {
+        return carteiraINSS;
     }
 
     /** Considera idoso o cliente com 60 anos ou mais (Estatuto do Idoso). */
