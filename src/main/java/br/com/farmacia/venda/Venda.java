@@ -38,6 +38,7 @@ public class Venda {
     private final boolean embrulhoPresente;
     private final String observacao;
     private final String receita;
+    private final String horarioEntrega;
 
     // Construtor PRIVADO: ninguém cria uma Venda diretamente, só pelo Builder.
     private Venda(Builder builder) {
@@ -49,6 +50,7 @@ public class Venda {
         this.embrulhoPresente = builder.embrulhoPresente;
         this.observacao = builder.observacao;
         this.receita = builder.receita;
+        this.horarioEntrega = builder.horarioEntrega;
     }
 
     /** Soma dos subtotais de todos os itens, antes do desconto. */
@@ -108,13 +110,17 @@ public class Venda {
         return receita;
     }
 
+    public String getHorarioEntrega() {
+        return horarioEntrega;
+    }
+
     // ======================================================================
-    //  PADRÃO BUILDER — classe interna estática.
+    // PADRÃO BUILDER — classe interna estática.
     //
-    //  Monta a Venda passo a passo com métodos fluentes (cada um devolve o
-    //  próprio Builder, permitindo encadear). Os obrigatórios entram no
-    //  construtor do Builder; os opcionais, em métodos próprios. O build()
-    //  valida as regras e devolve a Venda pronta e imutável.
+    // Monta a Venda passo a passo com métodos fluentes (cada um devolve o
+    // próprio Builder, permitindo encadear). Os obrigatórios entram no
+    // construtor do Builder; os opcionais, em métodos próprios. O build()
+    // valida as regras e devolve a Venda pronta e imutável.
     // ======================================================================
     public static class Builder {
 
@@ -129,6 +135,7 @@ public class Venda {
         private boolean embrulhoPresente = false;
         private String observacao = null;
         private String receita = null;
+        private String horarioEntrega = null;
 
         /** O cliente é obrigatório para iniciar uma venda. */
         public Builder(Cliente cliente) {
@@ -174,9 +181,19 @@ public class Venda {
             return this;
         }
 
-        /** Identificação da receita médica (ex.: CRM/número) apresentada pelo cliente. */
+        /**
+         * Identificação da receita médica (ex.: CRM/número) apresentada pelo cliente.
+         */
         public Builder comReceita(String identificacaoReceita) {
             this.receita = identificacaoReceita;
+            return this;
+        }
+
+        public Builder comHorarioEntrega(String horario) {
+            if (horario == null || horario.isBlank()) {
+                throw new IllegalArgumentException("Informe um horário de entrega.");
+            }
+            this.horarioEntrega = horario.trim();
             return this;
         }
 
@@ -198,6 +215,10 @@ public class Venda {
                     throw new IllegalStateException("Produto " + item.getProduto().getNome()
                             + " exige receita médica.");
                 }
+            }
+            if (horarioEntrega != null && !entrega) {
+                throw new IllegalStateException(
+                        "Horário agendado só pode ser informado para uma venda com entrega.");
             }
             return new Venda(this);
         }

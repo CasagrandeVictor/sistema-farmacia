@@ -252,6 +252,35 @@ src/main/java/br/com/farmacia/
     └── Moeda.java             # formatação de valores em R$ (pt-BR)
 ```
 
+## Extensão funcional implementada
+
+A extensão exercita os dois padrões já usados no projeto:
+
+- **Strategy:** `DescontoCompraMinima` aplica 10% de desconto quando o subtotal
+  da venda é igual ou superior a R$ 100,00. Abaixo desse valor, não há desconto.
+- **Builder:** `Venda.Builder.comHorarioEntrega(...)` permite informar um
+  horário para uma venda com entrega. O `build()` rejeita um horário informado
+  sem que a venda tenha sido configurada com entrega, e o cupom exibe o horário
+  agendado.
+
+### Como testar a extensão
+
+1. Na raiz do projeto, execute `mvn compile`.
+2. Execute `mvn exec:java` e escolha `1 - Rodar demonstração`.
+3. Na última venda do exemplo, confira os dois protetores solares (subtotal
+   R$ 119,80), o desconto de R$ 11,98, a taxa de entrega de R$ 8,00, o horário
+   informado e o total de R$ 115,82.
+
+Para conferir a regra do valor mínimo, teste a estratégia com subtotal inferior
+a R$ 100,00; o desconto esperado é zero. Para conferir a validação do Builder,
+informe um horário com `.comHorarioEntrega("amanhã às 14h")` sem chamar
+`.comEntrega(...)` e monte a venda com `build()`; a construção deve ser
+rejeitada.
+
+## Contribuição de cada integrante
+| Integrante | Contribuição |
+Gustavo Luis da Silva | Extensão dos padrões|
+
 ---
 
 ## Declaração de uso de IA
@@ -265,6 +294,9 @@ Conforme as regras da Parte 1, declaramos o uso de IA:
   incorporado ao trabalho.
 - **Revisão com Codex:** apoio na revisão geral, na correção da imutabilidade
   das vendas e da configuração de compilação, e na ampliação dos testes.
+
+
+
 
 ---
 
